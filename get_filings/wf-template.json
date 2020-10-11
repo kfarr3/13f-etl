@@ -1,0 +1,99 @@
+{
+    "metadata": {
+        "name": "etl-13f-get-filings",
+        "namespace": "argo",
+        "selfLink": "/apis/argoproj.io/v1alpha1/namespaces/argo/workflowtemplates/etl-13f-get-filings",
+        "uid": "a044dbbc-ad4f-4375-ac21-b001e39500d3",
+        "resourceVersion": "17519",
+        "generation": 3,
+        "creationTimestamp": "2020-10-10T21:12:13Z",
+        "labels": {
+            "workflows.argoproj.io/creator": "system-serviceaccount-argo-argo-server"
+        }
+    },
+    "spec": {
+        "templates": [
+            {
+                "name": "etl-13f-get-filings",
+                "arguments": {},
+                "inputs": {
+                    "parameters": [
+                        {
+                            "name": "start_year",
+                            "value": "{{workflow.parameters.start_year}}"
+                        },
+                        {
+                            "name": "start_quarter",
+                            "value": "{{workflow.parameters.start_quarter}}"
+                        },
+                        {
+                            "name": "GOOGLE_APPLICATION_CREDENTIALS",
+                            "value": "/secret/mountpath/sa_credentials.json"
+                        }
+                    ]
+                },
+                "outputs": {},
+                "metadata": {},
+                "container": {
+                    "name": "main",
+                    "image": "us.gcr.io/data-trial-1/etl_13f_get_filings",
+                    "env": [
+                        {
+                            "name": "START_YEAR",
+                            "value": "{{workflow.parameters.start_year}}"
+                        },
+                        {
+                            "name": "START_QUARTER",
+                            "value": "{{workflow.parameters.start_quarter}}"
+                        }
+                    ],
+                    "volumeMounts": [
+                        {
+                            "name": "my-secret-vol",
+                            "mountPath": "/secret/mountpath"
+                        }
+                    ]
+                }
+            }
+        ],
+        "entrypoint": "etl-13f-get-filings",
+        "arguments": {
+            "parameters": [
+                {
+                    "name": "start_year",
+                    "value": "2020"
+                },
+                {
+                    "name": "start_quarter",
+                    "value": "1"
+                }
+            ]
+        },
+        "volumes": [
+            {
+                "name": "my-secret-vol",
+                "secret": {
+                    "secretName": "etl-13f-secret",
+                    "items": [
+                        {
+                            "key": "data-trial-1-e0195a270dbe.json",
+                            "path": "sa_credentials.json"
+                        }
+                    ]
+                }
+            }
+        ],
+        "ttlStrategy": {
+            "secondsAfterCompletion": 300
+        },
+        "podGC": {
+            "strategy": "OnPodCompletion"
+        },
+        "workflowMetadata": {
+            "creationTimestamp": null,
+            "labels": {
+                "example": "true"
+            }
+        }
+    }
+}
