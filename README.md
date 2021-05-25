@@ -1,3 +1,5 @@
+# NOTE: Moved to: https://gitlab.com/farr-ai/daas-demo-farr-ai/etl-13f
+
 # etl-13f
 13f ETL Framework
 
